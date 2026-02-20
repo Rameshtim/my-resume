@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramesh Timsina | Software Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0b0f19;
+    --accent: #3b82f6;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --glass: rgba(255,255,255,0.04);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+}
+
+/* ── NAV ───────────────────────────────────────────────────────────── */
+nav {
+    position: fixed;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 2.2rem;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    z-index: 999;
+}
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+nav a:hover { color: var(--accent); }
+
+/* Language toggle */
+.lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 28px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #555; transition: .4s; border-radius: 28px;
+}
+.slider:before {
+    position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(26px); }
+
+/* Profile pic fixed top-right */
+.profile-fixed {
+    position: fixed; top: 18px; right: 30px; width: 48px; height: 48px;
+    border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 998; transition: transform 0.3s;
+}
+.profile-fixed:hover { transform: scale(1.1); }
+
+/* ── GENERAL ───────────────────────────────────────────────────────── */
+section { padding: 100px 8%; }
+.container { max-width: 1100px; margin: auto; }
+h1 { font-size: clamp(2.5rem,6vw,4rem); font-weight: 800; margin-bottom: 1rem; }
+h2 { font-size: 2rem; margin-bottom: 2rem; border-left: 4px solid var(--accent); padding-left: 12px; }
+h3 { font-size: 1.2rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+
+/* Logo styling – fixed size + circular */
+.logo-inline {
+    height: 2.1em;
+    max-height: 42px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background: white;
+    padding: 5px;
+    box-sizing: content-box;
+    flex-shrink: 0;
+}
+
+/* Timeline / Job cards */
+.timeline { display: flex; flex-direction: column; gap: 3rem; }
+.job {
+    background: var(--glass);
+    padding: 2rem;
+    border-radius: 18px;
+    transition: 0.3s;
+}
+.job:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,0.15); }
+.job-meta { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.8rem; }
+.job ul { margin-top: 1rem; padding-left: 1.3rem; color: var(--muted); }
+.job li { margin-bottom: 0.6rem; }
+
+/* Grids */
+.tech-grid, .lang-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.tech, .lang {
+    background: rgba(255,255,255,0.03);
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+.tech.show, .lang.show { opacity: 1; transform: translateY(0); }
+
+/* Links & Buttons */
+a.institution { color: var(--accent); text-decoration: none; font-weight: 600; }
+a.institution:hover { text-decoration: underline; }
+.btn {
+    display: inline-block; margin-top: 1rem; padding: 0.9rem 1.6rem;
+    border-radius: 12px; background: var(--accent); color: #000;
+    text-decoration: none; font-weight: 600;
+}
+.btn:hover { box-shadow: 0 10px 30px rgba(59,130,246,0.4); }
+
+/* Hero & About background */
+.hero, #about {
+    position: relative;
+    background: var(--bg) url('images/rtimsina.jpg') center/cover no-repeat fixed;
+    background-attachment: fixed;
+}
+.hero { height: 100vh; min-height: 800px; display: flex; align-items: center; }
+.hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(11,15,25,0.70), rgba(11,15,25,0.92));
+    display: flex; align-items: center; justify-content: center;
+}
+.hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; padding: 2rem; }
+
+/* About card */
+#about { min-height: 60vh; padding: 120px 8% 140px; }
+#about .container {
+    position: relative; z-index: 2;
+    background: rgba(20, 25, 40, 0.82); backdrop-filter: blur(12px);
+    padding: 3.5rem 2.5rem; border-radius: 16px; max-width: 900px; margin: 0 auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    border: 1px solid rgba(59,130,246,0.12);
+}
+
+/* Other sections */
+#experience, #education, #skills, #languages, #contact, footer {
+    position: relative; background: var(--bg); z-index: 1;
+}
+#experience { padding-top: 140px; }
+
+/* Fade-in */
+.fade { opacity: 0; transform: translateY(40px); transition: all 0.7s ease; }
+.fade.show { opacity: 1; transform: translateY(0); }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hero, #about { background-attachment: scroll; background-position: center 30%; }
+    nav { flex-wrap: wrap; justify-content: center; gap: 1.2rem; padding: 1rem 1.5rem; }
+    .lang-toggle { font-size: 0.85rem; }
+    .logo-inline { height: 1.9em; max-height: 36px; }
+}
+</style>
+</head>
+<body class="lang-en">
+
+<img src="images/rtimsina.jpg" alt="Ramesh Timsina" class="profile-fixed">
+
+<nav>
+    <a href="#about" data-en="About" data-de="Über mich">About</a>
+    <a href="#experience" data-en="Experience" data-de="Berufserfahrung">Experience</a>
+    <a href="#education" data-en="Education" data-de="Ausbildung">Education</a>
+    <a href="#skills" data-en="Skills" data-de="Fähigkeiten">Skills</a>
+    <a href="#languages" data-en="Languages" data-de="Sprachen">Languages</a>
+    <a href="#contact" data-en="Contact" data-de="Kontakt">Contact</a>
+
+    <div class="lang-toggle">
+        <label>EN</label>
+        <label class="switch">
+            <input type="checkbox" id="langSwitch">
+            <span class="slider"></span>
+        </label>
+        <label>DE</label>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-overlay">
+        <div class="container fade">
+            <div class="hero-content">
+                <h1>Ramesh Timsina</h1>
+                <p class="en">Automation & Systems-focused Software Developer based in Berlin.<br>Currently building large-scale deployment automation and infrastructure solutions at Humboldt University.</p>
+                <p class="de" style="display:none;">Automatisierungs- und systemorientierter Softwareentwickler mit Sitz in Berlin.<br>Derzeit Aufbau von großflächigen Deployment-Automatisierungen und Infrastrukturlösungen an der Humboldt-Universität.</p>
+                <a href="https://github.com/Rameshtim/" class="btn">GitHub</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+    <div class="container fade">
+        <h2 class="en">About Me</h2>
+        <h2 class="de" style="display:none;">Über mich</h2>
+        <p class="en">
+            My professional journey began outside tech — working as a delivery driver, courier, and bartender in Berlin. These roles built strong discipline, reliability, communication skills, and the ability to thrive under pressure.
+            <br><br>
+            Since 2022, I have transitioned fully into software development. I completed the rigorous peer-learning core curriculum at <a href="https://42berlin.de/" class="institution">42 Berlin</a> and successfully finished a state-recognized Umschulung as <strong>Fachinformatiker Anwendungsentwickler</strong>.
+            <br><br>
+            Currently at <a href="https://www.hu-berlin.de/" class="institution">Humboldt University</a>, I design and implement automation systems for large-scale infrastructure. I’m passionate about systems engineering, deployment automation, backend development, and creating tools that solve real operational challenges efficiently.
+        </p>
+        <p class="de" style="display:none;">
+            Mein beruflicher Weg begann außerhalb der IT — als Lieferfahrer, Kurier und Barkeeper in Berlin. Diese Tätigkeiten haben Disziplin, Zuverlässigkeit, Kommunikationsfähigkeit und Belastbarkeit unter Druck gefördert.
+            <br><br>
+            Seit 2022 bin ich vollständig in die Softwareentwicklung gewechselt. Ich habe das anspruchsvolle peer-learning Kerncurriculum bei <a href="https://42berlin.de/" class="institution">42 Berlin</a> absolviert und eine staatlich anerkannte Umschulung zum <strong>Fachinformatiker Anwendungsentwickler</strong> erfolgreich abgeschlossen.
+            <br><br>
+            Aktuell gestalte und implementiere ich bei der <a href="https://www.hu-berlin.de/" class="institution">Humboldt-Universität</a> Automatisierungssysteme für großflächige Infrastruktur. Meine Leidenschaft gilt System Engineering, Deployment-Automatisierung, Backend-Entwicklung und der Erstellung von Tools, die echte Betriebsprobleme effizient lösen.
+        </p>
+    </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+    <div class="container fade">
+        <h2 class="en">Work Experience</h2>
+        <h2 class="de" style="display:none;">Berufserfahrung</h2>
+        <div class="timeline">
+
+            <div class="job">
+                <div class="job-meta">03.2025 – Present | Berlin, Germany</div>
+                <h3>
+                    <img src="images/hu-logo.jpg" alt="Humboldt University" class="logo-inline">
+                    <span class="en">Automation Developer — <a href="https://www.hu-berlin.de/" class="institution">Humboldt University</a></span>
+                    <span class="de" style="display:none;">Automatisierungsentwickler — <a href="https://www.hu-berlin.de/" class="institution">Humboldt-Universität zu Berlin</a></span>
+                </h3>
+                <ul class="en">
+                    <li>Develop and maintain deployment automation for 800+ university computers</li>
+                    <li>Design and prepare secure digital exam environments</li>
+                    <li>Collect, analyze, and visualize system performance statistics</li>
+                    <li>Built custom PowerShell tool for automated UEFI → Frugal Linux boot switching</li>
+                </ul>
+                <ul class="de" style="display:none;">
+                    <li>Entwicklung und Pflege der Deployment-Automatisierung für >800 Universitätsrechner</li>
+                    <li>Konzeption und Vorbereitung sicherer digitaler Klausurumgebungen</li>
+                    <li>Erfassung, Analyse und Visualisierung von System-Performance-Statistiken</li>
+                    <li>Entwicklung eines eigenen PowerShell-Tools für automatisierten Wechsel UEFI → Frugal Linux Boot</li>
+                </ul>
+            </div>
+
+            <div class="job">
+                <div class="job-meta">20.10.2020 – 30.11.2022 | Berlin</div>
+                <h3 class="en">Delivery Driver — <a href="https://www.lieferando.de/fahrer" class="institution">Takeaway Express GmbH</a></h3>
+                <h3 class="de" style="display:none;">Lieferfahrer — <a href="https://www.lieferando.de/fahrer" class="institution">Takeaway Express GmbH</a></h3>
+                <ul class="en">
+                    <li>Class B driving license with clean record</li>
+                    <li>Safe, timely, and customer-focused deliveries</li>
+                </ul>
+                <ul class="de" style="display:none;">
+                    <li>Führerschein Klasse B ohne Punkte</li>
+                    <li>Sichere, pünktliche und kundenorientierte Auslieferungen</li>
+                </ul>
+            </div>
+
+            <div class="job">
+                <div class="job-meta">11.06.2020 – 23.09.2020 | Berlin</div>
+                <h3 class="en">Courier — Atlas Terra Logistik GmbH</h3>
+                <h3 class="de" style="display:none;">Kurier — Atlas Terra Logistik GmbH</h3>
+            </div>
+
+            <div class="job">
+                <div class="job-meta">01.12.2014 – 31.05.2020 | Berlin</div>
+                <h3 class="en">Barkeeper — Barmanager <a href="https://quepasa-berlin.de/" class="institution">Quepasa 1 GmbH</a></h3>
+                <h3 class="de" style="display:none;">Barkeeper — Barmanager <a href="https://quepasa-berlin.de/" class="institution">Quepasa 1 GmbH</a></h3>
+                <ul class="en">
+                    <li>Specialised in Cocktails Mixing</li>
+                    <li>Led a team of 5 bar staff in a high-pressure environment</li>
+                    <li>Managed high-volume orders with strong memory</li>
+                    <li>Maintained organized, hygienic bar environment</li>
+                    <li>Handled inventory tracking and stock control</li>
+                </ul>
+                <ul class="de" style="display:none;">
+                    <li>Spezialisiert auf Cocktail-Mixing</li>
+                    <li>Führung eines Teams von 5 Bar-Mitarbeitern in stressiger Umgebung</li>
+                    <li>Beherrschung von Großaufträgen mit sehr gutem Gedächtnis</li>
+                    <li>Pflege eines organisierten, hygienischen Barbetriebs</li>
+                    <li>Lagerführung und Bestandskontrolle</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+    <div class="container fade">
+        <h2 class="en">Education & Training</h2>
+        <h2 class="de" style="display:none;">Ausbildung & Weiterbildung</h2>
+        <div class="timeline">
+
+            <div class="job">
+                <div class="job-meta">11.2022 – 02.2025</div>
+                <h3>
+                    <img src="images/42.svg" alt="42 Berlin" class="logo-inline">
+                    <span class="en">Computer Science — <a href="https://42berlin.de/" class="institution">42 Berlin</a></span>
+                    <span class="de" style="display:none;">Informatik — <a href="https://42berlin.de/" class="institution">42 Berlin</a></span>
+                </h3>
+                <p class="en" style="color:var(--muted); margin-top:0.8rem;">
+                    Successfully completed the intensive peer-learning core curriculum at 42 Berlin — a highly selective, project-based software engineering program with no traditional classes or teachers. Focused on C, algorithms, Unix, networks, graphics, and full-stack development through 20+ rigorous projects.
+                </p>
+                <p class="de" style="color:var(--muted); margin-top:0.8rem; display:none;">
+                    Erfolgreicher Abschluss des intensiven peer-learning Kerncurriculums bei 42 Berlin — ein hochselektives, projektbasiertes Software-Engineering-Programm ohne klassischen Unterricht oder Dozenten. Schwerpunkt: C, Algorithmen, Unix, Netzwerke, Grafik und Full-Stack-Entwicklung in über 20 anspruchsvollen Projekten.
+                </p>
+            </div>
+
+            <div class="job">
+                <div class="job-meta">01.2023 – 01.2025</div>
+                <h3 class="en">Fachinformatiker Anwendungsentwickler — <a href="https://www.comcave.de/" class="institution">Comcave College</a></h3>
+                <h3 class="de" style="display:none;">Fachinformatiker Anwendungsentwickler — <a href="https://www.comcave.de/" class="institution">Comcave College</a></h3>
+                <p class="en" style="color:var(--muted); margin-top:0.8rem;">
+                    Completed state-recognized professional retraining (Umschulung) as Application Developer. Gained certified expertise in software design, implementation, testing, and maintenance — combining theoretical foundations with practical project work in modern development environments.
+                </p>
+                <p class="de" style="color:var(--muted); margin-top:0.8rem; display:none;">
+                    Erfolgreich abgeschlossene staatlich anerkannte Umschulung zum Fachinformatiker Anwendungsentwickler. Erworbene zertifizierte Kompetenzen in Software-Design, Implementierung, Test und Wartung — Verbindung von Theorie und Praxis in modernen Entwicklungsumgebungen.
+                </p>
+            </div>
+
+            <div class="job">
+                <div class="job-meta">10.2012 – 11.2014</div>
+                <h3 class="en">B.Sc. International Business & Economics — <a href="https://www.ovgu.de/" class="institution">Otto von Guericke University</a></h3>
+                <h3 class="de" style="display:none;">B.Sc. Internationale Betriebswirtschaft & Volkswirtschaftslehre — <a href="https://www.ovgu.de/" class="institution">Otto-von-Guericke-Universität</a></h3>
+                <p class="en" style="color:var(--muted); margin-top:0.8rem;">
+                    Discontinued after 2 years. But Completed foundational coursework in economics, business administration, and quantitative methods which is helping in software development.
+                </p>
+                <p class="de" style="color:var(--muted); margin-top:0.8rem; display:none;">
+                    Nach 2 Jahren abgebrochen. Dennoch abgeschlossene Grundlagenkurse in Volkswirtschaftslehre, Betriebswirtschaft und quantitativen Methoden — heute hilfreich für die Softwareentwicklung.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+    <div class="container fade">
+        <h2 class="en">Technical Skills</h2>
+        <h2 class="de" style="display:none;">Technische Fähigkeiten</h2>
+        <div class="tech-grid" id="techGrid">
+            <div class="tech">🧠 C / C++</div>
+            <div class="tech">🐍 Python</div>
+            <div class="tech">🌐 JavaScript</div>
+            <div class="tech">🚀 Django / REST</div>
+            <div class="tech">🟢 Node.js</div>
+            <div class="tech">🐳 Docker</div>
+            <div class="tech">🐘 PostgreSQL</div>
+            <div class="tech">🖥 PowerShell</div>
+            <div class="tech">🐚 Shell Scripting</div>
+            <div class="tech">🌍 Nginx / Apache</div>
+            <div class="tech">🔐 OAuth2</div>
+        </div>
+    </div>
+</section>
+
+<!-- LANGUAGES -->
+<section id="languages">
+    <div class="container fade">
+        <h2 class="en">Languages</h2>
+        <h2 class="de" style="display:none;">Sprachen</h2>
+        <div class="lang-grid" id="langGrid">
+            <div class="lang"><span class="en">English</span><span class="en">C1</span><span class="de" style="display:none;">Englisch</span><span class="de" style="display:none;">C1</span></div>
+            <div class="lang"><span class="en">German</span><span class="en">C1</span><span class="de" style="display:none;">Deutsch</span><span class="de" style="display:none;">C1</span></div>
+            <div class="lang"><span class="en">Nepali</span><span class="en">Native</span><span class="de" style="display:none;">Nepali</span><span class="de" style="display:none;">Muttersprache</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+    <div class="container fade">
+        <h2 class="en">Contact</h2>
+        <h2 class="de" style="display:none;">Kontakt</h2>
+        <p class="en">Berlin, Germany</p>
+        <p class="de" style="display:none;">Berlin, Deutschland</p>
+        <p>
+            <strong class="en">Email:</strong>
+            <strong class="de" style="display:none;">E-Mail:</strong>
+            <a href="mailto:ramesh.timsina@hu-berlin.de" style="color:var(--accent); text-decoration:none;">ramesh.timsina@hu-berlin.de</a>
+        </p>
+        <div style="margin-top:1.5rem;">
+            <a href="https://linkedin.com/in/ramesh-timsina" class="btn">LinkedIn</a>
+            <a href="https://github.com/Rameshtim/" class="btn" style="margin-left:1rem;">GitHub</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p class="en">© 2026 Ramesh Timsina</p>
+    <p class="de" style="display:none;">© 2026 Ramesh Timsina</p>
+</footer>
+
+<script>
+// Fade-in animations
+const faders = document.querySelectorAll(".fade");
+const appear = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("show");
+    });
+}, { threshold: 0.2 });
+faders.forEach(f => appear.observe(f));
+
+// Stagger tech skills
+const techItems = document.querySelectorAll(".tech");
+const techObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            techItems.forEach((el, i) => setTimeout(() => el.classList.add("show"), i * 80));
+        }
+    });
+}, { threshold: 0.1 });
+techObserver.observe(document.getElementById("techGrid"));
+
+// Stagger languages
+const langItems = document.querySelectorAll(".lang");
+const langObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            langItems.forEach((el, i) => setTimeout(() => el.classList.add("show"), i * 100));
+        }
+    });
+}, { threshold: 0.1 });
+langObserver.observe(document.getElementById("langGrid"));
+
+// ── Language Switch ─────────────────────────────────────────────────
+const langSwitch = document.getElementById('langSwitch');
+
+function updateLanguage() {
+    const isGerman = langSwitch.checked;
+    document.documentElement.lang = isGerman ? 'de' : 'en';
+    document.body.className = document.body.className.replace(/lang-\w+/, '').trim() + ` lang-${isGerman ? 'de' : 'en'}`;
+
+    // Toggle all bilingual content
+    document.querySelectorAll('.en, .de').forEach(el => {
+        el.style.display = (isGerman && el.classList.contains('de')) || (!isGerman && el.classList.contains('en'))
+            ? '' : 'none';
+    });
+
+    // Update nav links
+    document.querySelectorAll('nav a[data-en]').forEach(a => {
+        a.textContent = isGerman ? a.dataset.de : a.dataset.en;
+    });
+}
+
+langSwitch.addEventListener('change', updateLanguage);
+updateLanguage(); // initial call
+</script>
+</body>
+</html>
