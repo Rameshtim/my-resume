@@ -1,2 +1,2 @@
 # my-resume
-My resume is hosted via github pages and is accessible in www.ramhom.info
+A simple Resume using a static html file, hosted in a custom Domain accessible via www.ramhom.info
